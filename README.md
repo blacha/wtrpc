@@ -13,7 +13,7 @@ Implement the contract as a worker
 
 `worker.ts`
 ```typescript
-import { WorkerRpc } from 'wtrpc'
+import { WorkerRpc } from '@wtrpc/core'
 import { RpcContract } from './contract.js'
 import { parentPort } from 'node:worker_threads';
 
@@ -29,15 +29,23 @@ if (parentPort) worker.bind(parentPort);
 
 `pool.ts`
 ```typescript
-import { WorkerRpcPool } from 'wtrpc'
+import { WorkerRpcPool } from '@wtrpc/core'
 import { RpcContract } from './contract.js'
 
-const workerUrl = new URL(import.meta.url, './worker.js');
+const workerUrl = new URL('./worker.js', import.meta.url);
 const threadCount = os.cpus().length;
 
 const pool = new WorkerRpcPool<RpcContract>(threadCount, workerUrl);
 
 // Run the task on the worker thread pool
-const offsets = await pool.run('scan', { pid: 37, pattern: '00 ?? 00 ?? 07' })
+
+const tasks = [
+    { pid: 37 },
+    { pid: 50 },
+    { pid: 99 }
+]
+
+const offsets = tasks.map(t => pool.run('scan', { pid: t.pid, pattern: '00 ?? 00 ?? 07' }));
+const results = await Promise.all(offsets)
 // [-1]
 ```
