@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.0 (2022-08-25)
+
+
+### Features
+
+* add a onStart callback to initalize the workers ([63add64](https://github.com/blacha/wtrpc/commit/63add640cd813c80be1d53c892fbdc63d9ab52cf))
+* initial commit ([58919e3](https://github.com/blacha/wtrpc/commit/58919e3841725ec3877bfee0357784356b9e81ea))
+
+
+### Bug Fixes
+
+* missing .gitingore ([c60d1ce](https://github.com/blacha/wtrpc/commit/c60d1ce31f560d2311281368f60b07ff1f47961b))
+
 ## [0.0.3](https://github.com/blacha/memoryscanner/compare/v0.0.2...v0.0.3) (2022-05-09)
 
 **Note:** Version bump only for package wtrpc
