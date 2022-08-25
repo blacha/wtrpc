@@ -9,15 +9,25 @@ function isWorkerRequest<E extends Requests>(e: unknown): e is WorkerRequest<E> 
 }
 
 export class WorkerRpc<E extends Requests> {
+  id = threadId;
   threadId = threadId;
   routes: { [K in keyof E]: E[K] };
   port: MessagePort | null = null;
+  isStarted: boolean;
+  messageCount = 0;
 
   constructor(routes: { [K in keyof E]: E[K] }) {
     this.routes = routes;
+    this.isStarted = false;
   }
 
+  /** Callback to run when before the first message is processed */
+  onStart?: () => Promise<void>;
+
   async onMessage(e: unknown & { id: number }): Promise<WorkerResponseOk<E> | WorkerResponseError> {
+    if (!this.isStarted) await this.onStart?.();
+    this.messageCount++;
+    this.isStarted = true;
     try {
       if (isWorkerRequest<E>(e)) {
         if (this.routes[e.name] != null) {
