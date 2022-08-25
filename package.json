@@ -1,0 +1,31 @@
+{
+  "name": "@wtrpc/core",
+  "version": "0.0.5",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blacha/wtrpc.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./build/src/index.js",
+  "types": "./build/src/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "npx eslint . --ignore-path .gitignore",
+    "bundle": "npx esbuild src/index.ts --bundle --outfile=dist/index.cjs --platform=node",
+    "test": "echo 'No tests yet'"
+  },
+  "engines": {
+    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+  },
+  "files": [
+    "build/src"
+  ],
+  "devDependencies": {
+    "@linzjs/style": "^3.9.0",
+    "@types/node": "^18.7.13"
+  }
+}
