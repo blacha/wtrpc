@@ -37,8 +37,8 @@ export class WorkerRpc<E extends Requests> {
       }
       const error = new Error('Unknown Command');
       return { id: e.id, type: 'error', message: String(error), error };
-    } catch (error) {
-      return { id: e.id, type: 'error', message: String(error), error };
+    } catch (error: unknown) {
+      return { id: e.id, type: 'error', message: String(error), error: error as Error };
     }
   }
 
