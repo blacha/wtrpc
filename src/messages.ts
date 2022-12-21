@@ -11,8 +11,8 @@ export interface WorkerResponseOk<E extends Requests, K extends keyof E = keyof 
 export interface WorkerResponseError {
   id: number;
   type: 'error';
-  message?: string;
-  stack?: string;
+  message: string;
+  error: Error;
 }
 
 export interface WorkerRequest<E extends Requests, K extends keyof E = keyof E> {

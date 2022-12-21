@@ -35,9 +35,10 @@ export class WorkerRpc<E extends Requests> {
           return { id: e.id, type: 'done', response: res };
         }
       }
-      return { id: e.id, type: 'error', message: 'Unknown Command' };
-    } catch (err) {
-      return { id: e.id, type: 'error', message: String(err), stack: err instanceof Error ? err.stack : undefined };
+      const error = new Error('Unknown Command');
+      return { id: e.id, type: 'error', message: String(error), error };
+    } catch (error) {
+      return { id: e.id, type: 'error', message: String(error), error };
     }
   }
 

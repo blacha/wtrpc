@@ -3,7 +3,7 @@ import { Requests, WorkerRequest, WorkerResponseError, WorkerResponseOk } from '
 
 class Deferred<T> {
   promise: Promise<T>;
-  reject: (reason?: string) => void;
+  reject: (reason?: string | Error) => void;
   resolve: (value: T | PromiseLike<T>) => void;
   value: T | null = null;
   constructor() {
@@ -61,7 +61,7 @@ export class WorkerRpcPool<E extends Requests> {
           task.deferred.resolve(evt.response);
           break;
         case 'error':
-          task.deferred.reject(evt.message);
+          task.deferred.reject(evt.error);
           break;
         default:
           throw new Error('Unknown message: ' + evt);
