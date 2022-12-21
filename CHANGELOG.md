@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/blacha/wtrpc/compare/v1.0.0...v1.0.1) (2022-12-21)
+
+
+### Bug Fixes
+
+* raise the exact error so stack traces are preserved ([dd6c9fd](https://github.com/blacha/wtrpc/commit/dd6c9fdce591e005ef1faf04da10bf3d026544e8))
+
 ## 1.0.0 (2022-08-25)
 
 
