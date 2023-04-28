@@ -1,5 +1,5 @@
 import { Worker } from 'node:worker_threads';
-import { Requests, WorkerRequest, WorkerResponseError, WorkerResponseOk } from './messages';
+import { Requests, WorkerRequest, WorkerResponseError, WorkerResponseOk } from './messages.js';
 
 class Deferred<T> {
   promise: Promise<T>;
