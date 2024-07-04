@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/blacha/wtrpc/compare/v1.0.2...v1.0.3) (2024-07-04)
+
+
+### Bug Fixes
+
+* memory leak where tasks are not deleted ([94ef243](https://github.com/blacha/wtrpc/commit/94ef243e34d0d9aabd68f3792c75e409f315314b))
+
 ## [1.0.2](https://github.com/blacha/wtrpc/compare/v1.0.1...v1.0.2) (2023-04-28)
 
 
