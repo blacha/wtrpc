@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+
 import { WorkerRpcPool } from '../pool.js';
 import { RpcContract } from './rpc.worker.js';
 
@@ -38,7 +39,7 @@ describe('worker.rpc', () => {
     assert.equal(pool.todo.length, 0);
 
     for (let i = 0; i < 10; i++) {
-      const e = await pool.run('error', undefined).catch((e) => e);
+      const e = await pool.run('error', undefined).catch((e: unknown) => e);
       assert.equal(String(e), 'Error: Some Error');
     }
 

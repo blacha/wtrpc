@@ -1,10 +1,11 @@
 import { Worker } from 'node:worker_threads';
+
 import { Requests, WorkerRequest, WorkerResponseError, WorkerResponseOk } from './messages.js';
 
 class Deferred<T> {
   promise: Promise<T>;
-  reject: (reason?: string | Error) => void;
-  resolve: (value: T | PromiseLike<T>) => void;
+  reject?: (reason?: string | Error) => void;
+  resolve?: (value: T | PromiseLike<T>) => void;
   value: T | null = null;
   constructor() {
     this.promise = new Promise<T>((resolve, reject) => {
@@ -59,13 +60,15 @@ export class WorkerRpcPool<E extends Requests> {
       switch (evt.type) {
         case 'done':
           task.deferred.value = evt.response;
+          if (task.deferred.resolve == null) throw new Error('Task resolve was not defined: ' + String(task));
           task.deferred.resolve(evt.response);
           break;
         case 'error':
+          if (task.deferred.reject == null) throw new Error('Task reject was not defined: ' + String(task));
           task.deferred.reject(evt.error);
           break;
         default:
-          throw new Error('Unknown message: ' + evt);
+          throw new Error('Unknown message: ' + String(evt));
       }
 
       this.onWorkerFree();

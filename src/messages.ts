@@ -1,5 +1,5 @@
 export interface Requests {
-  [key: string]: (req: any) => Promise<any>;
+  [key: string]: (req: unknown) => Promise<unknown>;
 }
 
 export interface WorkerResponseOk<E extends Requests, K extends keyof E = keyof E> {

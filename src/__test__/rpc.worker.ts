@@ -1,4 +1,5 @@
 import { parentPort, threadId } from 'node:worker_threads';
+
 import { WorkerRpc } from '../worker.js';
 
 let workCount = 1;
