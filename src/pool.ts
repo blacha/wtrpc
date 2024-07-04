@@ -34,7 +34,7 @@ export class WorkerRpcPool<E extends Requests> {
 
   readonly workers: Worker[] = [];
   /** List of workers currently not doing anything */
-  private freeWorkers: Worker[] = []; // TODO maybe a Queue would be a better open here
+  freeWorkers: Worker[] = []; // TODO maybe a Queue would be a better open here
 
   /** List of tasks that need to be run */
   todo: WorkerRpc<Requests>[] = []; // TODO priority queue?
@@ -54,6 +54,7 @@ export class WorkerRpcPool<E extends Requests> {
 
       const task = this.tasks.get(evt.id);
       if (task == null) return this.onWorkerFree();
+      this.tasks.delete(evt.id);
       task.endedAt = Date.now();
       switch (evt.type) {
         case 'done':
