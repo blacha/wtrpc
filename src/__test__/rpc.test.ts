@@ -1,7 +1,7 @@
-import { describe, it, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
 import { WorkerRpcPool } from '../pool.js';
 import { RpcContract } from './rpc.worker.js';
-import assert from 'node:assert/strict';
 
 describe('worker.rpc', () => {
   const workerUrl = new URL('./rpc.worker.js', import.meta.url);
