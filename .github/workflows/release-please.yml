@@ -10,6 +10,10 @@ jobs:
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
     steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
@@ -17,13 +21,21 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   publish-release:
+    permissions:
+      contents: read
+      id-token: write
+
     needs: release-please
     runs-on: ubuntu-latest
     if: ${{ needs.release-please.outputs.release_created }}
     steps:
-      - uses: linz/action-typescript@v2
+      - uses: linz/action-typescript@v3
 
-      - name: Publish NPM
-        run: yarn publish
+      - name: Ensure latest NPM
+        run: npm install -g npm@latest
+
+      - name: Publish to NPM
+        run: npm publish --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
