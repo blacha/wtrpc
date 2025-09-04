@@ -16,7 +16,7 @@
     "build": "tsc",
     "lint": "npx eslint . --ignore-path .gitignore",
     "bundle": "npx esbuild src/index.ts --bundle --outfile=dist/index.cjs --platform=node",
-    "test": "echo 'No tests yet'"
+    "test": "node --test"
   },
   "engines": {
     "node": "^12.20.0 || ^14.13.1 || >=16.0.0"

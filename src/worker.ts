@@ -2,14 +2,14 @@ import { MessagePort, threadId } from 'node:worker_threads';
 
 import { Requests, WorkerRequest, WorkerResponseError, WorkerResponseOk } from './messages.js';
 
-function isWorkerRequest<E extends Requests>(e: unknown): e is WorkerRequest<E> {
+function isWorkerRequest<E extends Requests<E>>(e: unknown): e is WorkerRequest<E> {
   if (typeof e !== 'object') return false;
   if (e == null) return false;
   if ((e as WorkerRequest<E>).type === 'request') return true;
   return false;
 }
 
-export class WorkerRpc<E extends Requests> {
+export class WorkerRpc<E extends Requests<E>> {
   id = threadId;
   threadId = threadId;
   routes: { [K in keyof E]: E[K] };
@@ -32,7 +32,7 @@ export class WorkerRpc<E extends Requests> {
     try {
       if (isWorkerRequest<E>(e)) {
         if (this.routes[e.name] != null) {
-          const res = await this.routes[e.name](e.request);
+          const res = (await this.routes[e.name](e.request)) as ReturnType<E[typeof e.name]>;
           return { id: e.id, type: 'done', response: res } as WorkerResponseOk<E>;
         }
       }

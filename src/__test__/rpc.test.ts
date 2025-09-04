@@ -2,27 +2,48 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { WorkerRpcPool } from '../pool.js';
-import { RpcContract } from './rpc.worker.js';
+import { RpcContractInterface, RpcContractType } from './rpc.worker.js';
 
 describe('worker.rpc', () => {
   const workerUrl = new URL('./rpc.worker.js', import.meta.url);
 
-  it('should start workers', async () => {
-    const pool = new WorkerRpcPool<RpcContract>(2, workerUrl);
-    const [r1, r2] = await Promise.all([pool.run('doWork', undefined), pool.run('doWork', undefined)]);
-    assert.equal(r1.threadId, 2);
-    assert.equal(r2.threadId, 1);
+  it('should start workers via interfaces', async () => {
+    const pool = new WorkerRpcPool<RpcContractInterface>(2, workerUrl);
+    await pool.run('doWork', { workId: 'first' }).finally(() => {
+      console.log('done');
+    });
+    const [r1, r2] = await Promise.all([
+      pool.run('doWork', { workId: 'first' }),
+      pool.run('doWork', { workId: 'second' }),
+    ]);
+
+    assert.equal(r1.workId, 'first');
+    assert.equal(r2.workId, 'second');
+    assert.notEqual(r1.threadId, r2.threadId);
+
+    // assert.ok(true);
     await pool.close();
   });
 
+  it('should dispose with async using via types', async () => {
+    await using pool = new WorkerRpcPool<RpcContractType>(2, workerUrl);
+    const [r1, r2] = await Promise.all([
+      pool.run('doWork', { workId: 'first' }),
+      pool.run('doWork', { workId: 'second' }),
+    ]);
+    assert.equal(r1.workId, 'first');
+    assert.equal(r2.workId, 'second');
+    assert.notEqual(r1.threadId, r2.threadId);
+  });
+
   it('should not hold onto tasks', async () => {
-    const pool = new WorkerRpcPool<RpcContract>(2, workerUrl);
+    const pool = new WorkerRpcPool<RpcContractInterface>(2, workerUrl);
 
     assert.equal(pool.tasks.size, 0);
     assert.equal(pool.todo.length, 0);
 
     for (let i = 0; i < 10; i++) {
-      await pool.run('doWork', undefined);
+      await pool.run('doWork', { workId: 'first' });
     }
 
     assert.equal(pool.tasks.size, 0);
@@ -33,7 +54,7 @@ describe('worker.rpc', () => {
   });
 
   it('should not hold onto tasks with errors', async () => {
-    const pool = new WorkerRpcPool<RpcContract>(2, workerUrl);
+    const pool = new WorkerRpcPool<RpcContractInterface>(2, workerUrl);
 
     assert.equal(pool.tasks.size, 0);
     assert.equal(pool.todo.length, 0);

@@ -1,8 +1,7 @@
-export interface Requests {
-  [key: string]: (req: unknown) => Promise<unknown>;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Requests<T> = Record<keyof T, (...args: any[]) => Promise<any>>;
 
-export interface WorkerResponseOk<E extends Requests, K extends keyof E = keyof E> {
+export interface WorkerResponseOk<E extends Requests<E>, K extends keyof E = keyof E> {
   id: number;
   type: 'done';
   response: ReturnType<E[K]>;
@@ -15,7 +14,7 @@ export interface WorkerResponseError {
   error: Error;
 }
 
-export interface WorkerRequest<E extends Requests, K extends keyof E = keyof E> {
+export interface WorkerRequest<E extends Requests<E>, K extends keyof E = keyof E> {
   id: number;
   type: 'request';
   name: K;

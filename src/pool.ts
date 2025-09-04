@@ -15,7 +15,7 @@ class Deferred<T> {
   }
 }
 
-interface WorkerRpc<E extends Requests, K extends keyof E = keyof E> {
+interface WorkerRpc<E extends Requests<E>, K extends keyof E = keyof E> {
   message: WorkerRequest<E, K>;
   deferred: Deferred<ReturnType<E[K]>>;
 
@@ -27,7 +27,7 @@ interface WorkerRpc<E extends Requests, K extends keyof E = keyof E> {
   endedAt?: number;
 }
 
-export class WorkerRpcPool<E extends Requests> {
+export class WorkerRpcPool<E extends Requests<E>> {
   /** Current task ID */
   taskId = 0;
   /** Location to the worker  */
@@ -38,10 +38,10 @@ export class WorkerRpcPool<E extends Requests> {
   freeWorkers: Worker[] = []; // TODO maybe a Queue would be a better open here
 
   /** List of tasks that need to be run */
-  todo: WorkerRpc<Requests>[] = []; // TODO priority queue?
+  todo: WorkerRpc<Requests<E>>[] = []; // TODO priority queue?
 
   /** Mapping of taskId to task */
-  tasks: Map<number, WorkerRpc<Requests>> = new Map();
+  tasks: Map<number, WorkerRpc<Requests<E>>> = new Map();
 
   constructor(threads: number, worker: URL) {
     this.worker = worker;
@@ -87,8 +87,8 @@ export class WorkerRpcPool<E extends Requests> {
   }
 
   run<K extends keyof E>(name: K, req: Parameters<E[K]>[0]): ReturnType<E[K]> {
-    const message = { id: this.taskId++, type: 'request' as const, name: String(name), request: req };
-    const task: WorkerRpc<Requests> = {
+    const message = { id: this.taskId++, type: 'request' as const, name, request: req };
+    const task: WorkerRpc<Requests<E>> = {
       message,
       deferred: new Deferred(),
       queuedAt: Date.now(),
@@ -101,7 +101,7 @@ export class WorkerRpcPool<E extends Requests> {
     return task.deferred.promise as ReturnType<E[K]>;
   }
 
-  private execute(task: WorkerRpc<Requests>): void {
+  private execute(task: WorkerRpc<Requests<E>>): void {
     const worker = this.freeWorkers.pop();
     if (worker == null) throw new Error('Failed to acquire worker');
     task.startedAt = Date.now();
@@ -110,5 +110,9 @@ export class WorkerRpcPool<E extends Requests> {
 
   async close(): Promise<void> {
     await Promise.all(this.workers.map((c) => c.terminate()));
+  }
+
+  [Symbol.asyncDispose](): Promise<void> {
+    return this.close();
   }
 }
