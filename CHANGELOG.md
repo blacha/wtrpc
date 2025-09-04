@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.0](https://github.com/blacha/wtrpc/compare/v1.0.4...v1.1.0) (2025-09-04)
+
+
+### Features
+
+* support async using syntax ([9b92f70](https://github.com/blacha/wtrpc/commit/9b92f70cb9b6530c4d44a8c36ea8f4cb27f34bf4))
+
 ## [1.0.4](https://github.com/blacha/wtrpc/compare/v1.0.3...v1.0.4) (2024-07-04)
 
 
